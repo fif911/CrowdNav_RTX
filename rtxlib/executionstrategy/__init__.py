@@ -1,3 +1,4 @@
+from rtxlib.executionstrategy.EvolutionaryStrategy import start_evolutionary_strategy
 from rtxlib.executionstrategy.ForeverStrategy import start_forever_strategy
 from rtxlib.executionstrategy.StepStrategy import start_step_strategy
 from rtxlib.executionstrategy.SelfOptimizerStrategy import start_self_optimizer_strategy
@@ -30,6 +31,11 @@ def run_execution_strategy(wf):
         # elif wf.execution_strategy["type"] == "discrete_optimizer":
         #     log_results(wf.folder, wf.execution_strategy["knobs"] + ["result"], append=False)
         #     start_discrete_optimizer_strategy(wf)
+
+        elif wf.execution_strategy["type"] == "evolutionary":
+            log_results(wf.folder, list(wf.execution_strategy["knobs"].keys())  + ["result"], append=False)
+            start_evolutionary_strategy(wf)
+
 
         elif wf.execution_strategy["type"] == "uncorrelated_self_optimizer":
             log_results(wf.folder, list(wf.execution_strategy["knobs"].keys()) + ["result"], append=False)

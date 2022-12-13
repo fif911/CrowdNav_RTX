@@ -24,6 +24,7 @@ def execute_workflow(wf):
     init_pre_processors(wf)
     init_change_provider(wf)
     init_data_providers(wf)
+    info("> Initialization of workflow finished")
     # here we also execute the strategy
     run_execution_strategy(wf)
     # we are done, now we clean up

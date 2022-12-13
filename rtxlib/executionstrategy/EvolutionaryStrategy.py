@@ -102,7 +102,7 @@ def ga(variables, range_tuples, wf):
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
-        offspring = map(toolbox.clone, offspring)
+        offspring = list(map(toolbox.clone, offspring))
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):

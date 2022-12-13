@@ -14,6 +14,54 @@ RTX is particularly useful in analyzing operational data in a Big Data environem
 * To run example experiments, first install [CrowdNav](https://github.com/Starofall/CrowdNav)
 * To use Spark as a PreProcessor you also need to install Spark and set SPARK_HOME
 
+#### Short teams guide:
+
+How to run the CrowdNav and RTX together properly:
+
+1) **Kafka**  
+   Note that advertised host is localhost
+
+```bash
+docker run --name kafka --hostname kafka -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka
+```
+
+2) **CrowdNav**
+
+* Install python 2.7 locally
+* Create virtual environment
+* Run ```python setup.py install```
+* In config set
+
+```bash
+kafkaUpdates = True
+kafkaHost = "localhost:9092"
+```
+
+* Run run.py
+
+3) **RTX
+
+* Install Python 3
+* run ```python setup.py install```
+* run fixed version of RTX with ```python run.py start examples/crowdnav-sequential```
+* check the logs and plot after simulation
+
+Ensure the in ```definition.py```settings are:
+
+```python
+primary_data_provider = {
+    "type": "kafka_consumer",
+    "kafka_uri": "localhost:9092",
+    # ...
+}
+
+change_provider = {
+    "type": "kafka_producer",
+    "kafka_uri": "localhost:9092",
+    # ...
+}
+```
+
 ### Getting Started Guide
 A first guide is available at this [wiki page](https://github.com/Starofall/RTX/wiki/RTX-&-CrowdNav-Getting-Started-Guide)
 
