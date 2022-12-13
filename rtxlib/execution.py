@@ -19,7 +19,7 @@ def experimentFunction(wf, exp):
         change_creator = _defaultChangeProvider
 
     # start
-    info(">")
+    info("Experiment started>")
     #info("> KnobValues     | " + str(exp["knobs"]))
     # create new state
     exp["state"] = wf.state_initializer(dict(),wf)
@@ -99,6 +99,6 @@ def experimentFunction(wf, exp):
     info("> FullState      | " + str(exp["state"]))
     info("> ResultValue    | " + str(result))
     # log the result values into a csv file
-    #log_results(wf.folder, list(exp["knobs"].values()) + [result])
+    log_results(wf.folder, list(exp["knobs"].values()) + [result], append=True)
     # return the result value of the evaluator
     return result
