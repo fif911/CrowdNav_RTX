@@ -2,46 +2,46 @@
 
 ![Banner](https://raw.githubusercontent.com/Starofall/RTX/master/banner.PNG)
 
-
 ### Description
+
 Real-Time Experimentation (RTX) tool allows for self-adaptation based on analysis of real time (streaming) data.
 RTX is particularly useful in analyzing operational data in a Big Data environement.
 
-
 ### Minimal Setup
+
 * Download the RTX code
-* Run `python setup.py install` to download all dependencies 
+* Run `python setup.py install` to download all dependencies
 * To run example experiments, first install [CrowdNav](https://github.com/Starofall/CrowdNav)
 * To use Spark as a PreProcessor you also need to install Spark and set SPARK_HOME
 
-#### Short teams guide:
+### Short teams guide:
 
 How to run the CrowdNav and RTX together properly:
 
-1) **Kafka**  
+#### Kafka  
    Note that advertised host is localhost
 
 ```bash
 docker run --name kafka --hostname kafka -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka
 ```
 
-2) **CrowdNav**
-
+#### CrowdNav
+* Git clone the CrowdNav repo ```git clone https://github.com/iliasger/CrowdNav.git```
 * Install python 2.7 locally
 * Create virtual environment
 * Run ```python setup.py install```
-* In config set
+* In ```app/Config.py``` set:
 
-```bash
+```python
 kafkaUpdates = True
 kafkaHost = "localhost:9092"
 ```
 
-* Run run.py
+* Run ```run.py``` **in environment**
 
-3) **RTX**
-
-* Install Python 3
+#### RTX
+* Clone this RTX ```git clone https://github.com/fif911/CrowdNav_RTX```
+* Install Python 3. (Proven to work with Python 3.9)
 * run ```python setup.py install```
 * run fixed version of RTX with ```python run.py start examples/crowdnav-sequential```
 * check the logs and plot after simulation
@@ -63,20 +63,23 @@ change_provider = {
 ```
 
 ### Getting Started Guide
-A first guide is available at this [wiki page](https://github.com/Starofall/RTX/wiki/RTX-&-CrowdNav-Getting-Started-Guide)
+
+A first guide is available at
+this [wiki page](https://github.com/Starofall/RTX/wiki/RTX-&-CrowdNav-Getting-Started-Guide)
 
 ### Abstractions
 
 RTX has the following abstractions that can be implemented for any given service:
+
 * PreProcessor - To handle Big Data volumes of data, this is used to reduce the volume
-    * Example: Spark   
+    * Example: Spark
 * DataProviders - A source of data to be used in an experiment
     * Example: KafkaDataProvider, HTTPRequestDataProvider
 * ChangeProviders - Communicates experiment knobs/variables to the target system
     * Example: KafkaChangeProvider, HTTPRequestChangeProvider
 * ExecutionStrategy - Define the process of an experiment
-    * Example: Sequential, Gauss-Process-Self-Optimizing, Linear 
-* ExperimentDefinition - A experiment is defined in a python file 
+    * Example: Sequential, Gauss-Process-Self-Optimizing, Linear
+* ExperimentDefinition - A experiment is defined in a python file
     * See `./experiment-specification/experiment.py`
 
 ### Supported execution strategies
@@ -114,7 +117,7 @@ RTX has the following abstractions that can be implemented for any given service
         }
     }
     ```
-    
+
 * StepExplorer - Goes through the ranges in steps (useful for graphs/heatmaps)
     ```
     step_explorer = {
