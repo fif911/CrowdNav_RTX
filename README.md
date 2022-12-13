@@ -39,7 +39,7 @@ kafkaHost = "localhost:9092"
 
 * Run run.py
 
-3) **RTX
+3) **RTX**
 
 * Install Python 3
 * run ```python setup.py install```
