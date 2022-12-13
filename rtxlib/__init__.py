@@ -35,7 +35,7 @@ def clearOldLog():
 def logToFile(any):
     """ appends the message to the execution.log file """
     if LOG_FOLDER is not None:
-        f = open(LOG_FOLDER + '/execution.log', 'w+')
+        f = open(LOG_FOLDER + '/execution.log', 'a')
         f.write(str(any) + "\n")
 
 
@@ -96,7 +96,7 @@ def log_results(experiment_folder, data, append=True):
     """ logs the result values of an experiment to a csv file """
     try:
         if append:
-            with open('./' + str(experiment_folder) + '/results.csv', 'w+') as csv_file:
+            with open('./' + str(experiment_folder) + '/results.csv', 'a') as csv_file:
                 writer = csv.writer(csv_file, dialect='excel')
                 writer.writerow(data)
         else:

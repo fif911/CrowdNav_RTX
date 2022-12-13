@@ -2,7 +2,6 @@ import logging
 
 import requests
 from colorama import Fore
-from flask import json
 
 from rtxlib import info, error, debug
 from rtxlib.changeproviders.ChangeProvider import ChangeProvider
