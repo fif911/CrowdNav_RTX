@@ -43,7 +43,7 @@ kafkaHost = "localhost:9092"
 * Clone this RTX ```git clone https://github.com/fif911/CrowdNav_RTX```
 * Install Python 3. (Proven to work with Python 3.9)
 * run ```python setup.py install```
-* run fixed version of RTX with ```python run.py start examples/crowdnav-sequential```
+* run fixed version of RTX with ```python rtx.py start examples/crowdnav-sequential```
 * check the logs and plot after simulation
 
 Ensure the in ```definition.py```settings are:
