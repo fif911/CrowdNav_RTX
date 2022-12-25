@@ -18,14 +18,20 @@ RTX is particularly useful in analyzing operational data in a Big Data environem
 
 How to run the CrowdNav and RTX together properly:
 
-#### Kafka  
-   Note that advertised host is localhost
+#### Sumo
+
+Install SUMO **1.14.1** and **add SUMO_HOME to PATH as it says in the guide**.
+
+#### Kafka
+
+Note that advertised host is localhost
 
 ```bash
 docker run --name kafka --hostname kafka -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka
 ```
 
 #### CrowdNav
+
 * Git clone the CrowdNav repo ```git clone https://github.com/iliasger/CrowdNav.git```
 * Install python 2.7 locally
 * Create virtual environment
@@ -40,6 +46,7 @@ kafkaHost = "localhost:9092"
 * Run ```run.py``` **in environment**
 
 #### RTX
+
 * Clone this RTX ```git clone https://github.com/fif911/CrowdNav_RTX```
 * Install Python 3. (Proven to work with Python 3.9)
 * run ```python setup.py install```
