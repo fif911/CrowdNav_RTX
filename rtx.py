@@ -16,7 +16,7 @@ def loadDefinition(folder):
         exit(1)
     try:
         wf = imp.load_source('wf', './' + folder + '/definition.py')
-        print("maybe")
+        # print("maybe")
         wf.folder = sys.argv[2]
         testName = wf.name
         return wf

@@ -26,6 +26,7 @@ def run_execution_strategy(wf):
             start_sequential_strategy(wf)
         elif wf.execution_strategy["type"] == "seasonality":
             # TODO(seasonality): Here we run our stately, maybe will have to be adjusted later
+            # info(list(wf.execution_strategy["knobs"][0].keys()) + ["result"])
             log_results(wf.folder, list(wf.execution_strategy["knobs"][0].keys()) + ["result"], append=False)
             start_seasonality_strategy(wf)
         elif wf.execution_strategy["type"] == "self_optimizer":
