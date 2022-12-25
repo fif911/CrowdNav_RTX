@@ -79,7 +79,8 @@ def experimentFunction(wf, exp):
         # this iteration should stop asap
         error("This experiment got stopped as requested by a StopIteration exception")
     try:
-        result = wf.evaluator(exp["state"],wf)
+        # TODO(seasonality): Interesting place to look at. We evaluate our experiment here
+        result = wf.evaluator(exp["state"], wf)
     except Exception as e:
         print(e)
         result = 0

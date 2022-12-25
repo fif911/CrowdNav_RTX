@@ -1,3 +1,10 @@
+# TODO(seasonality): Implement logic here ??
+"""
+We will have 1 experiment with will run for a long time with all the options
+OR
+We can have multiple experiments FOR EACH time step (e.g. we run 24 experiments with simulate 1 days in total)
+I would suggest going to the second as it is easier to integrate
+"""
 from pprint import pprint
 
 from colorama import Fore
@@ -6,9 +13,9 @@ from rtxlib import info, error
 from rtxlib.execution import experimentFunction
 
 
-def start_sequential_strategy(wf):
+def start_seasonality_strategy(wf):
     """ executes all experiments from the definition file """
-    info("> ExecStrategy   | Sequential", Fore.CYAN)
+    info("> ExecStrategy   | Seasonality", Fore.CYAN)
     wf.totalExperiments = len(wf.execution_strategy["knobs"])
     info(f"Total experiments: {wf.totalExperiments}")
     for exp_num, kn in enumerate(wf.execution_strategy["knobs"]):
