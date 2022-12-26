@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn import linear_model
 
-DEFAULT = r"."
+DEFAULT = r"./trafficDBs/traffic_hourly.csv"
 
 class Deintegrator():
     def __init__(self,data):
@@ -102,7 +102,7 @@ class TrafficGenerator():
     def fourierModel(self,harmonic_depth = None):
         data = self.data
         if harmonic_depth is None:
-            harmonic_depth = len(data)//100
+            harmonic_depth = len(data)//10
         n = len(data)
         t = np.arange(0, n)
         x_freqdom = np.fft.fft(data)
