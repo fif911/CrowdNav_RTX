@@ -7,7 +7,7 @@ from rtxlib.dataproviders.DataProvider import DataProvider
 
 
 class KafkaConsumerDataProvider(DataProvider):
-    """ implements a data provider for kafaka """
+    """ implements a data provider for kafka """
 
     def __init__(self, wf, cp):
         self.callBackFunction = None

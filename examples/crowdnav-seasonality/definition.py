@@ -38,6 +38,13 @@ def primary_data_reducer(state, newData, wf):
     return state
 
 
+def performance_data_reducer(state, newData, wf):
+    cnt = state["duration_count"]
+    state["duration_avg"] = (state["duration_avg"] * cnt + newData["duration"]) / (cnt + 1)
+    state["duration_count"] = cnt + 1
+    return state
+
+
 primary_data_provider = {
     "type": "kafka_consumer",
     "kafka_uri": "localhost:9092",
@@ -52,6 +59,18 @@ change_provider = {
     "topic": "crowd-nav-commands",
     "serializer": "JSON",
 }
+
+kafkaTopicTick = "crowd-nav-tick_updates"
+
+secondary_data_providers = [
+    {
+        "type": "kafka_consumer",
+        "kafka_uri": "localhost:9092",
+        "topic": kafkaTopicTick,
+        "serializer": "JSON",
+        "data_reducer": lambda x, y, z: x
+    }
+]
 
 
 def evaluator(resultState, wf):
