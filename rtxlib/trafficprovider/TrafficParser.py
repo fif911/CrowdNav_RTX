@@ -8,26 +8,38 @@ import math
 DEFAULT = r"./trafficDBs/traffic_hourly.csv"
 
 class Deintegrator():
-    def __init__(self,data):
+    def __init__(self,data,linear_structure=True):
         ldata = np.log(data)
-        regr = linear_model.LinearRegression()
-        result = regr.fit(np.array(range(len(ldata))).reshape(-1,1), np.array(ldata).reshape(-1,1))
-        a,b = result.intercept_[0], result.coef_[0][0]
-        self.intercept = a
-        self.slope = b
+        if linear_structure:
+            regr = linear_model.LinearRegression()
+            result = regr.fit(np.array(range(len(ldata))).reshape(-1,1), np.array(ldata).reshape(-1,1))
+            a,b = result.intercept_[0], result.coef_[0][0]
+            self.intercept = a
+            self.slope = b
+        else:
+            a = self.intercept = np.mean(data)
+            b = self.slope = 0
         regressor = pd.core.series.Series([a+b*i for i in range(len(data))],data.index)
         self.data = ldata - regressor
+        self.dilation = 1
 
     def deintegratedData(self):
         return self.data
 
     def rescale(self,time,value):
-        return np.exp(self.intercept + self.slope * time + value)
+        ttime = time * self.dilation
+        tlimit = len(self.data)
+        if ttime > tlimit:
+            texcess = ttime-tlimit
+            transfer = tlimit/100
+            a = min(1,texcess/transfer)
+            ttime = a * (texcess ** (9/10)) + (1-a) * texcess + tlimit
+        return np.exp(self.intercept + self.slope * ttime + value)
 
 class TrafficGenerator():
-    def __init__(self, reference_mean = 1000, dataset = None,minute_in_step = 5, rescale_time = None, extend = "Extrapolate",
-                 model = "Fourier", interpolate = "linear", noiseScale = 0, stream = False,
-                 remove_growth = None):
+    def __init__(self, reference_mean = 1000, dataset = None, minute_in_step = 15, rescale_time = None, extend = "Loop",
+                 model = "Fourier", interpolate = "spline", interpolate_order = 3, noiseScale = 0, stream = False,
+                 remove_growth = False):
         """inputs:
             reference_mean: Intended mean of population at the start of simulation
             dataset: Traffic Dataset to pass to the simulation
@@ -39,16 +51,19 @@ class TrafficGenerator():
             interpolate: Pandas Interpolation Argument, defaults to 'linear'
             noiseScale: Scale of Additive noise added during extrapolation
             stream: Whether it's a batched dataset or it's a stream (only False is supported)
+            remove_growth = Treat traffic as non-integrated
         """
+        self.integral = not remove_growth
         self.rescale_time = rescale_time
         self.minutesTic = minute_in_step
+        self.interpolate = interpolate
+        self.order = interpolate_order
         if dataset is None and not stream:
             self.load(DEFAULT)
         elif not stream:
             self.load(dataset)
         else:
             raise NotImplementedError("Data Streaming Not Implemented")
-        self.interpol = interpolate
         modelEnum = {"Fourier":self.fourierModel}
         modelF = modelEnum[model] if model in modelEnum else self.fourierModel
         extendEnum = {"Error":self.raiseOutOfData,"Extrapolate":modelF,
@@ -70,12 +85,14 @@ class TrafficGenerator():
         raw_data["timestamp"] = pd.to_datetime(raw_data["timestamp"])
         time = raw_data["timestamp"]
         data = raw_data.set_index("timestamp")["volume"]
-        self.integrationModel = Deintegrator(data)
+        self.raw_data = raw_data
+        self.integrationModel = Deintegrator(data,self.integral)
         data = self.integrationModel.deintegratedData()
         idx = data.index
         secFreq = int(mxt * 60)
         nidx = pd.date_range(time.min(), time.max(), freq='%ds'%secFreq)
-        res = data.reindex(idx.union(nidx)).interpolate('spline',order=3).reindex(nidx)
+        res = data.reindex(idx.union(nidx)).interpolate(self.interpolate,order=self.order).reindex(nidx)
+        self.integrationModel.dilation = len(idx)/len(nidx)
         self.data = res
 
     def rescale(self,tic,val):
@@ -85,10 +102,10 @@ class TrafficGenerator():
         return scale_factor * volume
 
     def _scaled_tic_(self,tic):
-        if len(self.data) < tic:
+        if len(self.data) > tic:
             return self.rescale(tic,self.data.iloc[tic])
         else:
-            return self.rescale(self.extrapolate(tic))
+            return self.rescale(tic, self.extrapolate(tic))
 
     def __call__(self,tic = None):
         if tic is None:
@@ -148,7 +165,7 @@ class TrafficGenerator():
         def extrapolate(tic):
             noise = self.noise()
             return restored_sig[tic%n] + noise
-        return extrapolate
+        self.extrapolate = extrapolate
 
     def noise(self):
          return np.random.normal(0, self.noiseIndex)
