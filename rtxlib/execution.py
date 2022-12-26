@@ -108,7 +108,7 @@ def experimentFunction(wf, exp, tgen = None):
     """ executes a given experiment="""
     start_time = current_milli_time()
     wf.primary_data_provider["instance"].reset() # remove all old data from the queues
-    initExperiment()
+    initExperiment(wf,exp)
     warmup(wf,exp)
     sample_size = exp["sample_size"]
     try:
