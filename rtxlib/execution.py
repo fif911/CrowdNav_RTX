@@ -57,10 +57,10 @@ def experimentFunction(wf, exp):
 
             # we start with the primary data provider using blocking returnData
             new_data = wf.primary_data_provider["instance"].returnData()
-            print(f"New data from {wf.primary_data_provider['instance']} = {new_data}")
+            # print(f"New data from {wf.primary_data_provider['instance']} = {new_data}")
             if new_data is not None:
                 try:
-                    print(new_data)
+                    # print(new_data)
                     exp["state"] = wf.primary_data_provider["data_reducer"](exp["state"], new_data, wf)
                 except StopIteration:
                     raise StopIteration()  # just fwd

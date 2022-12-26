@@ -18,6 +18,10 @@ def start_seasonality_strategy(wf):
     info("> ExecStrategy   | Seasonality", Fore.CYAN)
     wf.totalExperiments = len(wf.execution_strategy["knobs"])
     info(f"Total experiments: {wf.totalExperiments}")
+
+    # knob gener
+
+
     for exp_num, kn in enumerate(wf.execution_strategy["knobs"]):
         info(f"Total experiments: {wf.totalExperiments}")
         info(f"Running experiment: {exp_num + 1}/{wf.totalExperiments}")

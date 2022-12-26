@@ -93,6 +93,7 @@ class TrafficGenerator():
     def evalNoise(self,noiseScale):
         return np.std(self.data)*noiseScale
 
+    @staticmethod
     def raiseOutOfData():
         raise IndexError("Time Series index out of range")
 

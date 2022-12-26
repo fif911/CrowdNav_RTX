@@ -2,7 +2,7 @@
 name = "CrowdNav-Seasonality"
 
 execution_strategy = {
-    "ignore_first_n_results": 0,  # TODO(seasonality): THIS IS OUR SETTING TIME (car_migration_ticks_amount)
+    "ignore_first_n_results": 10,  # TODO(seasonality): THIS IS OUR SETTING TIME (car_migration_ticks_amount)
     "sample_size": 100,  # TODO(seasonality): THIS IS OUR LENGTH OF AN HOUR. SHOULD BE CONVERTED TO TICKS TIME
     "type": "seasonality",
     "knobs": [
@@ -14,18 +14,18 @@ execution_strategy = {
         #     "total_car_counter": 1,
         #     "car_counter_is_initial": False
         # },
-        {"total_car_counter": 400,
+        {"total_car_counter": 800,
          "car_counter_is_initial": True,
          "car_migration_ticks_amount": 500,  # e.g. setting time. pass it to CrowdNav so we can adjust our
          # increase/decrease algorithm
          },
-        {"total_car_counter": 1000,
+        {"total_car_counter": 400,
          "car_counter_is_initial": False},
-        {"total_car_counter": 2000,
+        {"total_car_counter": 1500,
          "car_counter_is_initial": False},
         {"total_car_counter": 100,
          "car_counter_is_initial": False},
-        {"total_car_counter": 3500,
+        {"total_car_counter": 2000,
          "car_counter_is_initial": False}
     ]
 }
