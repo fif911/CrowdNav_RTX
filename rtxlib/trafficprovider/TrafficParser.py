@@ -21,7 +21,7 @@ class Deintegrator():
             b = self.slope = 0
         regressor = pd.core.series.Series([a+b*i for i in range(len(data))],data.index)
         self.data = ldata - regressor
-        self.dilation = 1
+        self.dilation = 1.0
 
     def deintegratedData(self):
         return self.data
@@ -38,7 +38,7 @@ class Deintegrator():
 
 class TrafficGenerator():
     def __init__(self, reference_mean = 1000, dataset = None, minute_in_step = 15, rescale_time = None, extend = "Loop",
-                 model = "Fourier", interpolate = "spline", interpolate_order = 3, noiseScale = 0, stream = False,
+                 model = "Fourier", interpolate = "linear", interpolate_order = 2, noiseScale = 0, stream = False,
                  remove_growth = False):
         """inputs:
             reference_mean: Intended mean of population at the start of simulation
@@ -94,6 +94,11 @@ class TrafficGenerator():
         res = data.reindex(idx.union(nidx)).interpolate(self.interpolate,order=self.order).reindex(nidx)
         self.integrationModel.dilation = len(idx)/len(nidx)
         self.data = res
+        self.start_date = time.min()
+        self.dilation = self.minutesTic * self.rescale_time if self.rescale_time is not None else 1
+
+    def date(self,tic):
+        return self.start_date + pd.Timedelta(self.dilation * tic,"min")
 
     def rescale(self,tic,val):
         tic = 0 if self.removeIntegration else tic
