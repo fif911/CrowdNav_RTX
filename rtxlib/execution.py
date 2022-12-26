@@ -78,11 +78,18 @@ def trafficUpdate(wf, exp, tgen, new_data):
         error("apply changes did not work")
 
 
-def secondaryUpdate(wf, exp,tgen):
+def secondaryUpdate(wf, exp, tgen):
     for cp in wf.secondary_data_providers:
         if tgen is not None and cp["topic"] == "crowd-nav-tick_updates":
+            # print("Waiting for data")
             new_data = cp["instance"].returnData()
-            trafficUpdate(wf,exp,tgen,new_data)
+            # print("recieved new data")
+            # if not new_data:
+            #     # fool-prof strategy
+            #     error("Not new data arrived")
+            #     continue
+            # print(new_data)
+            trafficUpdate(wf, exp, tgen, new_data)
             new_data = [new_data]
         else:
             new_data = cp["instance"].returnDataListNonBlocking()
@@ -123,9 +130,14 @@ def experimentFunction(wf, exp, tgen=None):
     initExperiment(wf, exp)
     warmup(wf, exp)
     sample_size = exp["sample_size"]
+    i = 0
     try:
-        for i in range(sample_size):
+        print("Before collecting samples")
+        while i < sample_size:
             primaryUpdate(wf, exp, tgen is None)
+            i += 1
+            if i % 10 == 0:
+                print(f"i = {i} out of {sample_size}")
             process("CollectSamples | ", i, sample_size)
             # now we use returnDataListNonBlocking on all secondary data providers
             if hasattr(wf, "secondary_data_providers"):

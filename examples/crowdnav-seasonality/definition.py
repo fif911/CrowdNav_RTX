@@ -3,8 +3,9 @@ from pprint import pprint
 
 name = "CrowdNav-Seasonality"
 execution_strategy = {
-    "ignore_first_n_results": 10,  # TODO(seasonality): THIS IS OUR SETTING TIME (car_migration_ticks_amount)
-    "sample_size": 60*24*7*4,  # TODO(seasonality): THIS IS OUR LENGTH OF AN HOUR. SHOULD BE CONVERTED TO TICKS TIME
+    "ignore_first_n_results": 10,  # SETTING TIME
+    # "sample_size": 60*24*7*4,
+    "sample_size": 2 * 60 * 24 * 7,  # how much eval steps we want. Eval is 30 secs in legoland
     "type": "seasonality",
     "knobs": [
         # {
