@@ -62,8 +62,8 @@ def primaryUpdate(wf, exp, blocking=False):
 
 
 def trafficUpdate(wf, exp, tgen, new_data):
-    print(tgen)
-    print(new_data)
+    # print(tgen)
+    # print(new_data)
     c_tick = new_data['tick']
     if tgen.base_tick is None:
         tgen.base_tick = c_tick
@@ -79,22 +79,22 @@ def trafficUpdate(wf, exp, tgen, new_data):
 
 
 def secondaryUpdate(wf, exp,tgen):
-    print("secondaryUpdate")
     for cp in wf.secondary_data_providers:
         if tgen is not None and cp["topic"] == "crowd-nav-tick_updates":
             new_data = cp["instance"].returnData()
             trafficUpdate(wf,exp,tgen,new_data)
+            new_data = [new_data]
         else:
             new_data = cp["instance"].returnDataListNonBlocking()
-            for nd in new_data:
-                try:
-                    exp["state"] = cp["data_reducer"](exp["state"], nd, wf)
-                except StopIteration:
-                    raise StopIteration()  # just
-                except RuntimeError:
-                    raise RuntimeError()  # just fwd
-                except:
-                    error("could not reducing data set: " + str(nd))
+        for nd in new_data:
+            try:
+                exp["state"] = cp["data_reducer"](exp["state"], nd, wf)
+            except StopIteration:
+                raise StopIteration()  # just
+            except RuntimeError:
+                raise RuntimeError()  # just fwd
+            except:
+                error("could not reducing data set: " + str(nd))
 
 
 def logResults(wf, exp, start_time, result):
@@ -128,7 +128,6 @@ def experimentFunction(wf, exp, tgen=None):
             primaryUpdate(wf, exp, tgen is None)
             process("CollectSamples | ", i, sample_size)
             # now we use returnDataListNonBlocking on all secondary data providers
-            print(hasattr(wf, "secondary_data_providers"))
             if hasattr(wf, "secondary_data_providers"):
                 secondaryUpdate(wf, exp, tgen)
             # if tgen is not None:

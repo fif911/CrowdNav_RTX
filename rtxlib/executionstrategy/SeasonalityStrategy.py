@@ -5,7 +5,6 @@ OR
 We can have multiple experiments FOR EACH time step (e.g. we run 24 experiments with simulate 1 days in total)
 I would suggest going to the second as it is easier to integrate
 """
-from pprint import pprint
 
 from colorama import Fore
 

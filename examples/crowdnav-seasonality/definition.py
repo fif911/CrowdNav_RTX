@@ -68,8 +68,8 @@ kafkaTopicTick = "crowd-nav-tick_updates"
 
 
 def ticks_data_reducer(state, newData, wf):
-    print(f"state: {state}")
-    print(f"newData: {newData}")
+    # print(f"state: {state}")
+    # print(f"newData: {newData}")
     state['ticks'].append(newData['tick'])
     state['traffic_volumes'].append(newData['traffic_volume'])
     state['traffic_targets'].append(newData['traffic_target'])
