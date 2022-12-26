@@ -15,3 +15,8 @@ examples/**/*.png
 examples/**/execution.log
 examples/**/results.csv
 RTX.egg-info/
+Scripts/*
+Lib/*
+Include/*
+.spyproject/*
+pyenv.cfg
