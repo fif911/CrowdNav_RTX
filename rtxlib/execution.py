@@ -37,9 +37,12 @@ def initExperiment(wf,exp):
         error("apply changes did not work")
 
 
-def primaryUpdate(wf,exp):
+def primaryUpdate(wf,exp,blocking = False):
     # we start with the primary data provider using blocking returnData
-    new_data = wf.primary_data_provider["instance"].returnData()
+    if blocking:
+        new_data = wf.primary_data_provider["instance"].returnData()
+    else:
+        new_data = wf.primary_data_provider["instance"].returnDataListNonBlocking()
     # print(f"New data from {wf.primary_data_provider['instance']} = {new_data}")
     if new_data is not None:
         try:
@@ -110,7 +113,7 @@ def experimentFunction(wf, exp, tgen = None):
     sample_size = exp["sample_size"]
     try:
         for i in range(sample_size):
-            primaryUpdate(wf,exp)
+            primaryUpdate(wf,exp,tgen is None)
             process("CollectSamples | ", i, sample_size)
             # now we use returnDataListNonBlocking on all secondary data providers
             if hasattr(wf, "secondary_data_providers"):
