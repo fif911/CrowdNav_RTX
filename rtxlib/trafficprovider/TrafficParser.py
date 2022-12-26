@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import linear_model
+import math
 
 DEFAULT = r"./trafficDBs/traffic_hourly.csv"
 
@@ -24,10 +25,23 @@ class Deintegrator():
         return np.exp(self.intercept + self.slope * time + value)
 
 class TrafficGenerator():
-    def __init__(self, reference_mean = 1000, dataset = None,minute_in_tic = 5,extend = "Extrapolate",
+    def __init__(self, reference_mean = 1000, dataset = None,minute_in_step = 5, rescale_time = None, extend = "Extrapolate",
                  model = "Fourier", interpolate = "linear", noiseScale = 0, stream = False,
                  remove_growth = None):
-        self.minutesTic = minute_in_tic
+        """inputs:
+            reference_mean: Intended mean of population at the start of simulation
+            dataset: Traffic Dataset to pass to the simulation
+            minute_in_step: Minutes in a Subdivisions for interpolation
+            rescale_time: Scale Factor for the minute_in_step.
+                            If its 30 tic per second and 5 minute_in_step then rescale should be 1/(5*30)
+            extend: Algorithm to handle time points after end of dataset ("Error","Extrapolate","Hold","Loop")
+            model: Model for Extrapolation, only option is "Fourier"
+            interpolate: Pandas Interpolation Argument, defaults to 'linear'
+            noiseScale: Scale of Additive noise added during extrapolation
+            stream: Whether it's a batched dataset or it's a stream (only False is supported)
+        """
+        self.rescale_time = rescale_time
+        self.minutesTic = minute_in_step
         if dataset is None and not stream:
             self.load(DEFAULT)
         elif not stream:
@@ -67,16 +81,29 @@ class TrafficGenerator():
     def rescale(self,tic,val):
         tic = 0 if self.removeIntegration else tic
         volume = self.integrationModel.rescale(tic,val)
-        scale_factor = self.simulationMean/self.integrationModel(0,self.sourceMean)
+        scale_factor = self.simulationMean/self.integrationModel.rescale(0,self.sourceMean)
         return scale_factor * volume
 
-    def __call__(self,tic = None):
-        if tic is None:
-            tic = self.currentIndex
+    def _scaled_tic_(self,tic):
         if len(self.data) < tic:
             return self.rescale(tic,self.data.iloc[tic])
         else:
             return self.rescale(self.extrapolate(tic))
+
+    def __call__(self,tic = None):
+        if tic is None:
+            tic = self.currentIndex
+        if self.rescale_time is not None:
+            ntic = tic*self.rescale_time
+            l = math.floor(ntic)
+            r = math.ceil(ntic)
+            lval = self._scaled_tic_(l)
+            rval = self._scaled_tic_(r)
+            a = ntic-l
+            return (1-a)*lval + (a)*rval
+        else:
+            return self._scaled_tic_(tic)
+
 
     def next(self):
         ix = self.currentIndex
@@ -93,7 +120,7 @@ class TrafficGenerator():
     def evalNoise(self,noiseScale):
         return np.std(self.data)*noiseScale
 
-    def raiseOutOfData():
+    def raiseOutOfData(self):
         raise IndexError("Time Series index out of range")
 
     def hold(self,*args,**kwargs):
