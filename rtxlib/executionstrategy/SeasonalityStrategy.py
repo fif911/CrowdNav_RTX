@@ -26,15 +26,15 @@ def start_seasonality_strategy(wf):
         if "total_car_counter" not in knobset:
             knobset["total_car_counter"] = 600
         pop_size = knobset["total_car_counter"]
-        res = experimentFunction(wf, {
-            "knobs": knobset,
-            "ignore_first_n_results": warmup_size,
-            "sample_size": 2*warmup_size,
-        })
+        # res = experimentFunction(wf, {
+        #     "knobs": knobset,
+        #     "ignore_first_n_results": warmup_size,
+        #     "sample_size": 2*warmup_size,
+        # })
         res = experimentFunction(wf, {
             "knobs": knobset,
             "ignore_first_n_results": warmup_size,
             "sample_size": sample_size,},
-            TrafficGenerator(pop_size,minute_in_step=15,time_scale = 1/15)
+            TrafficGenerator(pop_size,minute_in_step=15,rescale_time = 1/15)
             )
     #Warm-Up

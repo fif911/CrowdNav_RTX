@@ -39,7 +39,7 @@ if __name__ == '__main__':
         rtxlib.LOG_FOLDER = wf.folder
         rtxlib.clearOldLog()
         info("> Starting RTX experiment...")
-        execute_workflow(wf)
+        execute_workflow(wf)  # data in definition.py
         plot(wf)
         exit(0)
     if len(sys.argv) > 2 and sys.argv[1] == "report":
