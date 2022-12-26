@@ -80,6 +80,7 @@ class TrafficGenerator():
         self.currentIndex = 0
         self.noiseIndex = 0
         self.removeIntegration = remove_growth
+        self.base_tick = None
 
     def load(self, filepath):
         mxt = self.minutesTic
@@ -150,8 +151,11 @@ class TrafficGenerator():
         self.extrapolate = lambda t: self.data.iloc[-1] + self.noise()
 
     def fourierModel(self, harmonic_depth=None):
+        #Traditional Fourier Extrapolation
         data = self.data
         if harmonic_depth is None:
+            #Defaults to 10% resolution approximation
+            #a harmonic depth equal to twice the sample length is the same as loop
             harmonic_depth = len(data) // 10
         n = len(data)
         t = np.arange(0, n)
@@ -159,15 +163,16 @@ class TrafficGenerator():
         f = np.fft.fftfreq(n)
         indexes = range(n)
         indexes = sorted(indexes, key=lambda i: np.absolute(f[i]))
-
         t = np.arange(0, n)
         restored_sig = np.zeros(t.size)
+        #Reconstruct signal from sum of principal harmonics
         for i in indexes[:1 + harmonic_depth * 2]:
             ampli = np.absolute(x_freqdom[i]) / n  # amplitude
             phase = np.angle(x_freqdom[i])  # phase
             restored_sig += ampli * np.cos(2 * np.pi * f[i] * t + phase)
         restored_sig = restored_sig * np.std(data) / np.std(restored_sig)
-
+        #Define the extrapolator from the precalculated sum of harmonics
+        #using periodicity to minimize calculations
         def extrapolate(tic):
             noise = self.noise()
             return restored_sig[tic % n] + noise
