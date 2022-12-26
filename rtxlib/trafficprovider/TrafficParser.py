@@ -4,8 +4,9 @@ import numpy as np
 import pandas as pd
 from sklearn import linear_model
 import math
-
-DEFAULT = r"C:\Users\ozakotianskyi\PycharmProjects\RTX\rtxlib\trafficprovider\trafficDBs\traffic_hourly.csv"
+import os
+dirname = os.path.dirname(__file__)
+DEFAULT = os.path.join(dirname, r"trafficDBs\traffic_hourly.csv")
 
 
 class Deintegrator():
