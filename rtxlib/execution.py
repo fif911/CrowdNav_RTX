@@ -1,13 +1,18 @@
 from rtxlib import info, error, warn, direct_print, process, log_results, current_milli_time
 
 
-def _defaultChangeProvider(variables,wf):
+def _defaultChangeProvider(variables, wf):
     """ by default we just forword the message to the change provider """
     return variables
 
 
 def experimentFunction(wf, exp):
-    """ executes a given experiment """
+    """ executes a given experiment
+
+
+    TODO(seasonality): In seasonality strategy, we should not wait for specific amount of data samples gathered. We should wait
+    for amount of ticks !!!
+    """
     start_time = current_milli_time()
     # remove all old data from the queues
     wf.primary_data_provider["instance"].reset()
@@ -20,13 +25,15 @@ def experimentFunction(wf, exp):
 
     # start
     info("Experiment started>")
-    #info("> KnobValues     | " + str(exp["knobs"]))
+    info("> KnobValues for this experiment     | " + str(exp["knobs"]))
+    info(f"Change creator: {change_creator(exp['knobs'], wf)}")
     # create new state
-    exp["state"] = wf.state_initializer(dict(),wf)
+    exp["state"] = wf.state_initializer(dict(), wf)
 
     # apply changes to system
+    # TODO(seasonality): Here we actually pass changes through Kafka to CrowdNav
     try:
-        wf.change_provider["instance"].applyChange(change_creator(exp["knobs"],wf))
+        wf.change_provider["instance"].applyChange(change_creator(exp["knobs"], wf))
     except:
         error("apply changes did not work")
 
@@ -40,19 +47,21 @@ def experimentFunction(wf, exp):
                 i += 1
                 process("IgnoreSamples  | ", i, to_ignore)
         print("")
+    print("Ignoring finished. Started to collect data")
 
     # start collecting data
     sample_size = exp["sample_size"]
     i = 0
     try:
         while i < sample_size:
-            
+
             # we start with the primary data provider using blocking returnData
             new_data = wf.primary_data_provider["instance"].returnData()
+            print(f"New data from {wf.primary_data_provider['instance']} = {new_data}")
             if new_data is not None:
                 try:
-                    # print(new_data)
-                    exp["state"] = wf.primary_data_provider["data_reducer"](exp["state"], new_data,wf)
+                    print(new_data)
+                    exp["state"] = wf.primary_data_provider["data_reducer"](exp["state"], new_data, wf)
                 except StopIteration:
                     raise StopIteration()  # just fwd
                 except RuntimeError:
@@ -67,7 +76,7 @@ def experimentFunction(wf, exp):
                     new_data = cp["instance"].returnDataListNonBlocking()
                     for nd in new_data:
                         try:
-                            exp["state"] = cp["data_reducer"](exp["state"], nd,wf)
+                            exp["state"] = cp["data_reducer"](exp["state"], nd, wf)
                         except StopIteration:
                             raise StopIteration()  # just
                         except RuntimeError:
