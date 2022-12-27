@@ -180,8 +180,5 @@ RTX has the following abstractions that can be implemented for any given service
 
 ### Seasonality strategy
 * In `definition.py` of `crowdnav-seasonality`, Various functions are defined for seasonality analysis. The result are saved in `seasonality_details.csv`. According to the result we can find the differences between actual traffic volumes and expected volumes. As well as the differences of speeds between smart cars and normal cars.
+<img width="1133" alt="image" src="https://user-images.githubusercontent.com/58473822/209715661-5d4caa27-9cb1-46a7-96ee-ee73ea3a6564.png">
 
-        <img width="1133" alt="image" src="https://user-images.githubusercontent.com/58473822/209715601-d6b64b29-7e61-4e90-9670-fd79c1828566.png">
-
-
-                 remove_growth=False):
