@@ -1,4 +1,15 @@
-# Evolutionary search for knob values
+"""
+Evolutionary search for knob values
+
+By far these are the best values for Router we were able to get:
+    'route_random_sigma': 0.23,
+    'exploration_percentage': 0.17,
+    'max_speed_and_length_factor': 1.95,
+    'average_edge_duration_factor': 1.36,
+    'freshness_update_factor': 16,
+    'freshness_cut_off_value': 696,
+    're_route_every_ticks': 54
+"""
 name = "CrowdNav-Evolutionary"
 
 execution_strategy = {
