@@ -6,7 +6,7 @@ execution_strategy = {
     "ignore_first_n_results": 10,  # SETTLING TIME
     # "sample_size": 60*24*7*4,
     # "sample_size": 60 * 24,  # how much eval steps we want. Eval is 30 secs in legoland
-    "sample_size": 20,  # how much eval steps we want. Eval step is 30 secs in legoland
+    "sample_size": 2 * 60 * 24 * 7,  # how much eval steps we want. Eval step is 30 secs in legoland
     "type": "seasonality",
     "knobs": [
         {
