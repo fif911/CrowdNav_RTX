@@ -14,6 +14,7 @@ dist/
 examples/**/*.png
 examples/**/execution.log
 examples/**/results.csv
+examples/**/seasonality_details.csv
 RTX.egg-info/
 Scripts/*
 Lib/*
