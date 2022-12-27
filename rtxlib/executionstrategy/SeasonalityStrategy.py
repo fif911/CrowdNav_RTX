@@ -37,4 +37,4 @@ def start_seasonality_strategy(wf):
                              rescale_time=1 / (60 * 15))
         )
         print(
-            f"Experiment took: {(current_milli_time() - exp_start_timestamp) / 1000 / 60} minutes")
+            f"Experiment took: {round((current_milli_time() - exp_start_timestamp) / 1000 / 60, 2)} minutes")
