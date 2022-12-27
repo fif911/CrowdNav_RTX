@@ -4,8 +4,19 @@
 
 ### Description
 
-Real-Time Experimentation (RTX) tool allows for self-adaptation based on analysis of real time (streaming) data.
-RTX is particularly useful in analyzing operational data in a Big Data environement.
+**Real-Time Experimentation** (RTX) tool allows for self-adaptation based on analysis of real time (streaming) data.
+RTX is particularly useful in analyzing operational data in a Big Data environment.
+
+**This is a managing system for CrowdNav. The seasonality extension allows it to simulate traffic fluctuations
+throughout time.**
+
+### Traffic Generator
+
+**FILL DATA HERE**
+Takes dataset and simulates traffic for infinite amount of time
+Blue is the dataset. Orange is the simulated traffic based on the dataset
+
+![Banner](./images/traffic_generator_simulates_traffic.png)
 
 ### Minimal Setup
 
