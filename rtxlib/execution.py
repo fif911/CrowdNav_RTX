@@ -42,16 +42,14 @@ def initExperiment(wf, exp):
 
 
 def primaryUpdate(wf, exp, blocking=False):
-    # we start with the primary data provider using blocking returnData
+    """we start with the primary data provider using blocking returnData"""
     if blocking:
         new_data = wf.primary_data_provider["instance"].returnData()
     else:
         new_data = wf.primary_data_provider["instance"].returnDataListNonBlocking()
         new_data = new_data[0] if new_data else None
-    # print(f"New data from {wf.primary_data_provider['instance']} = {new_data}")
     if new_data:
         try:
-            # print(new_data)
             exp["state"] = wf.primary_data_provider["data_reducer"](exp["state"], new_data, wf)
         except StopIteration:
             raise StopIteration()  # just fwd

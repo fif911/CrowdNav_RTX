@@ -80,6 +80,7 @@ def evaluator(resultState, wf):
 
 
 def state_initializer(state, wf):
+    """Initialize every states when the experiment begin"""
     state["count"] = 0
     state["avg_overhead"] = 0
     # We flood our memory with arrays data
