@@ -179,6 +179,39 @@ RTX has the following abstractions that can be implemented for any given service
                  remove_growth=False):
 
 ### Seasonality strategy
-* In `definition.py` of `crowdnav-seasonality`, Various functions are defined for seasonality analysis. The result are saved in `seasonality_details.csv`. According to the result we can find the differences between actual traffic volumes and expected volumes in every 30 ticks as set by defult in CrowdNav. As well as the differences of speeds between smart cars and normal cars.
+* In `definition.py` of `crowdnav-seasonality`, Various functions are defined for seasonality analysis.
+* primary_data_reducer - Processes data sent when smart car arrives
+* ticks_data_reducer - Processes data sent on every 30 ticks in CrowdNav by default
+* primary_data_provider - RTX registers as a customer of Kafka to subscribe messages from CrowdNav returned values
+
+        primary_data_provider = {
+            "type": "kafka_consumer",
+            "kafka_uri": "localhost:9092",
+            "topic": "crowd-nav-trips",
+            "serializer": "JSON",
+            "data_reducer": primary_data_reducer
+        }
+* change_provider - RTX also registers as a provider of Kafka to provide change directives
+
+        change_provider = {
+            "type": "kafka_producer",
+            "kafka_uri": "localhost:9092",
+            "topic": "crowd-nav-commands",
+            "serializer": "JSON",
+        }  
+* secondary_data_providers - RTX again registers as a customer of Kafka to subscribe messages for tick recording
+
+        secondary_data_providers = [
+            {
+                "type": "kafka_consumer",
+                "kafka_uri": "localhost:9092",
+                "topic": kafkaTopicTick,
+                "serializer": "JSON",
+                "data_reducer": ticks_data_reducer
+            }
+        ]
+* evaluator - Function to evaluate goodness of the knobs in the experiment
+* state_initializer - Initilize every state when experiment starts
+* The result are saved in `seasonality_details.csv`. According to the result we can find the differences between actual traffic volumes and expected volumes on every 30 ticks as set by defult in CrowdNav. As well as the differences of speeds between smart cars and normal cars.
 <img width="1133" alt="image" src="https://user-images.githubusercontent.com/58473822/209715661-5d4caa27-9cb1-46a7-96ee-ee73ea3a6564.png">
 
