@@ -1,7 +1,7 @@
 """
 Evolutionary search for knob values
 
-By far these are the best values for Router we were able to get:
+By far these are the best values for Router for 500 cars we were able to get:
     'route_random_sigma': 0.23,
     'exploration_percentage': 0.17,
     'max_speed_and_length_factor': 1.95,
