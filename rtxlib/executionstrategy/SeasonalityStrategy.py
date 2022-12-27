@@ -1,18 +1,15 @@
-# TODO(seasonality): Implement logic here ??
 """
-We will have 1 experiment with will run for a long time with all the options
-OR
-We can have multiple experiments FOR EACH time step (e.g. we run 24 experiments with simulate 1 days in total)
-I would suggest going to the second as it is easier to integrate
+Seasonality strategy
+
+Runs experiments in Knobs (default 1) for set number of sample_size
+Gathers data in 2 CSVs and saves them to examples/crowdnav-seasonality/ folder
 """
 
 from colorama import Fore
 
-from rtxlib import info, error, current_milli_time
+from rtxlib import info, current_milli_time
 from rtxlib.execution import experimentFunction
 from rtxlib.trafficprovider.TrafficParser import TrafficGenerator
-
-import matplotlib.pyplot as plt
 
 
 def start_seasonality_strategy(wf):
@@ -40,4 +37,4 @@ def start_seasonality_strategy(wf):
                              rescale_time=1 / (60 * 15))
         )
         print(
-            f"Experiment took: {(current_milli_time() - exp_start_timestamp)/1000/60} minutes")
+            f"Experiment took: {(current_milli_time() - exp_start_timestamp) / 1000 / 60} minutes")
