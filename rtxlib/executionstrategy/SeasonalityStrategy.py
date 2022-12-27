@@ -36,6 +36,8 @@ def start_seasonality_strategy(wf):
                 "ignore_first_n_results": warmup_size,
                 "sample_size": sample_size,
             },
-            TrafficGenerator(car_counter, minute_in_step=15, rescale_time=1 / (60 * 15))
+            TrafficGenerator(car_counter, minute_in_step=15,
+                             rescale_time=1 / (60 * 15))
         )
-        print(f"Experiment took: {(current_milli_time() - exp_start_timestamp)/1000/60} minutes")
+        print(
+            f"Experiment took: {(current_milli_time() - exp_start_timestamp)/1000/60} minutes")

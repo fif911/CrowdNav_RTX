@@ -24,7 +24,8 @@ def warmup(wf, exp):
 def initExperiment(wf, exp):
     """Load change event creator or use a default"""
     change_creator = _defaultChangeProvider
-    if hasattr(wf, "change_event_creator"): change_creator = change_creator
+    if hasattr(wf, "change_event_creator"):
+        change_creator = change_creator
 
     # start
     info("Experiment started>")
@@ -35,7 +36,8 @@ def initExperiment(wf, exp):
 
     # apply changes to system
     try:
-        wf.change_provider["instance"].applyChange(change_creator(exp["knobs"], wf))
+        wf.change_provider["instance"].applyChange(
+            change_creator(exp["knobs"], wf))
     except:
         error("apply changes did not work")
 
@@ -45,11 +47,13 @@ def primaryUpdate(wf, exp, blocking=False):
     if blocking:
         new_data = wf.primary_data_provider["instance"].returnData()
     else:
-        new_data = wf.primary_data_provider["instance"].returnDataListNonBlocking()
+        new_data = wf.primary_data_provider["instance"].returnDataListNonBlocking(
+        )
         new_data = new_data[0] if new_data else None
     if new_data:
         try:
-            exp["state"] = wf.primary_data_provider["data_reducer"](exp["state"], new_data, wf)
+            exp["state"] = wf.primary_data_provider["data_reducer"](
+                exp["state"], new_data, wf)
         except StopIteration:
             raise StopIteration()  # just fwd
         except RuntimeError:
@@ -125,9 +129,11 @@ def logResults(wf, exp, start_time, result):
 
     # log seasonality_details.csv
     if seasonality_details_plot:  # check if there is relevant data to plot
-        log_results(wf.folder, list(seasonality_details_plot.keys()), csv_name="seasonality_details.csv", append=False)
+        log_results(wf.folder, list(seasonality_details_plot.keys()),
+                    csv_name="seasonality_details.csv", append=False)
         for d in zip(*seasonality_details_plot.values()):
-            log_results(wf.folder, d, csv_name="seasonality_details.csv", append=True)
+            log_results(
+                wf.folder, d, csv_name="seasonality_details.csv", append=True)
 
     # log results.csv
     log_results(wf.folder, list(exp["knobs"].values()) + [result], append=True)
@@ -136,7 +142,8 @@ def logResults(wf, exp, start_time, result):
 def experimentFunction(wf, exp, tgen=None):
     """ executes a given experiment="""
     start_time = current_milli_time()
-    wf.primary_data_provider["instance"].reset()  # remove all old data from the queues
+    # remove all old data from the queues
+    wf.primary_data_provider["instance"].reset()
     initExperiment(wf, exp)
     warmup(wf, exp)
     sample_size = exp["sample_size"]

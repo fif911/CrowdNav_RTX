@@ -5,7 +5,8 @@ Crowd Nav Seasonality simulation
 name = "CrowdNav-Seasonality"
 execution_strategy = {
     "ignore_first_n_results": 10,  # SETTLING TIME
-    "sample_size": 2 * 60 * 24,  # how much eval steps we want. Eval step is 30 secs in legoland
+    # how much eval steps we want. Eval step is 30 secs in legoland
+    "sample_size": 2 * 60 * 24,
     "type": "seasonality",
     "knobs": [
         {
@@ -28,7 +29,8 @@ execution_strategy = {
 def primary_data_reducer(state, newData, wf):
     """Processes data sent when smart car arrives"""
     cnt = state["count"]
-    state["avg_overhead"] = (state["avg_overhead"] * cnt + newData["overhead"]) / (cnt + 1)
+    state["avg_overhead"] = (state["avg_overhead"] *
+                             cnt + newData["overhead"]) / (cnt + 1)
     state["count"] = cnt + 1
     return state
 
