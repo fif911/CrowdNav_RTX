@@ -123,12 +123,13 @@ def logResults(wf, exp, start_time, result):
     seasonality_details_plot: dict = copy.deepcopy(exp["state"])
     del seasonality_details_plot['count']
     del seasonality_details_plot['avg_overhead']
-    del seasonality_details_plot['overheads']  # not the size of other arrays !!!
+    seasonality_details_plot.pop('overheads', None)  # not the size of other arrays !!!
 
     # log seasonality_details.csv
-    log_results(wf.folder, list(seasonality_details_plot.keys()), csv_name="seasonality_details.csv", append=False)
-    for d in zip(*seasonality_details_plot.values()):
-        log_results(wf.folder, d, csv_name="seasonality_details.csv", append=True)
+    if seasonality_details_plot:  # check if there is relevant data to plot
+        log_results(wf.folder, list(seasonality_details_plot.keys()), csv_name="seasonality_details.csv", append=False)
+        for d in zip(*seasonality_details_plot.values()):
+            log_results(wf.folder, d, csv_name="seasonality_details.csv", append=True)
 
     # log results.csv
     log_results(wf.folder, list(exp["knobs"].values()) + [result], append=True)
@@ -147,8 +148,9 @@ def experimentFunction(wf, exp, tgen=None):
         while i < sample_size:
             primaryUpdate(wf, exp, tgen is None)
             i += 1
-            # if i % 10 == 0:
-            #     print(f"Progress: {i} out of {sample_size}")  # as collect samples progress bar does not work for me |_o_|
+            if i % 10 == 0:
+                print(
+                    f"Progress: {i} out of {sample_size}")  # as collect samples progress bar does not work for me |_o_|
             process("CollectSamples | ", i, sample_size, start=start_time)
             # now we use returnDataListNonBlocking on all secondary data providers
             if hasattr(wf, "secondary_data_providers"):

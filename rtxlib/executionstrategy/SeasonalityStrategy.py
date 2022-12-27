@@ -34,6 +34,6 @@ def start_seasonality_strategy(wf):
             "knobs": knobset,
             "ignore_first_n_results": warmup_size,
             "sample_size": sample_size,},
-            TrafficGenerator(pop_size,minute_in_step=15,rescale_time = 1/15)
+            TrafficGenerator(pop_size,minute_in_step=15,rescale_time = 1/(60*15))
             )
     #Warm-Up
