@@ -1,6 +1,6 @@
 import copy
 
-from rtxlib import info, error, warn, direct_print, process, log_results, current_milli_time
+from rtxlib import info, error, process, log_results, current_milli_time
 
 
 def _defaultChangeProvider(variables, wf):
@@ -9,7 +9,7 @@ def _defaultChangeProvider(variables, wf):
 
 
 def warmup(wf, exp):
-    """ignore the first data sets"""
+    """Ignore the first data sets"""
     to_ignore = exp["ignore_first_n_results"]
     if to_ignore > 0:
         i = 0
@@ -19,7 +19,6 @@ def warmup(wf, exp):
                 i += 1
                 process("IgnoreSamples  | ", i, to_ignore)
         print("")
-    # print("Ignoring finished. Started to collect data")
 
 
 def initExperiment(wf, exp):
@@ -42,16 +41,14 @@ def initExperiment(wf, exp):
 
 
 def primaryUpdate(wf, exp, blocking=False):
-    # we start with the primary data provider using blocking returnData
+    """We start with the primary data provider using blocking returnData"""
     if blocking:
         new_data = wf.primary_data_provider["instance"].returnData()
     else:
         new_data = wf.primary_data_provider["instance"].returnDataListNonBlocking()
         new_data = new_data[0] if new_data else None
-    # print(f"New data from {wf.primary_data_provider['instance']} = {new_data}")
     if new_data:
         try:
-            # print(new_data)
             exp["state"] = wf.primary_data_provider["data_reducer"](exp["state"], new_data, wf)
         except StopIteration:
             raise StopIteration()  # just fwd
@@ -156,8 +153,6 @@ def experimentFunction(wf, exp, tgen=None):
             # now we use returnDataListNonBlocking on all secondary data providers
             if hasattr(wf, "secondary_data_providers"):
                 secondaryUpdate(wf, exp, tgen)
-            # if tgen is not None:
-            #    trafficUpdate(wf,exp,tgen)
         print("")
     except StopIteration:
         # this iteration should stop asap

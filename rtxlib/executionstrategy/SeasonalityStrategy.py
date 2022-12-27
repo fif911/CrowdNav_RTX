@@ -8,7 +8,7 @@ I would suggest going to the second as it is easier to integrate
 
 from colorama import Fore
 
-from rtxlib import info, error
+from rtxlib import info, error, current_milli_time
 from rtxlib.execution import experimentFunction
 from rtxlib.trafficprovider.TrafficParser import TrafficGenerator
 
@@ -28,6 +28,7 @@ def start_seasonality_strategy(wf):
         if "total_car_counter" not in knobset:
             knobset["total_car_counter"] = 600  # set default
         car_counter = knobset["total_car_counter"]
+        exp_start_timestamp = current_milli_time()
         experimentFunction(
             wf,
             {
@@ -37,3 +38,4 @@ def start_seasonality_strategy(wf):
             },
             TrafficGenerator(car_counter, minute_in_step=15, rescale_time=1 / (60 * 15))
         )
+        print(f"Experiment took: {(current_milli_time() - exp_start_timestamp)/1000/60} minutes")
