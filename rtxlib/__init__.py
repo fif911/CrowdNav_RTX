@@ -62,7 +62,7 @@ def error(any, color=Fore.RED):
         print(color + "> Error: " + str(any) + Fore.RESET)
 
 
-def process(preText, i, total):
+def process(preText, i, total, start = None):
     """ used to display the progress bar while experiments run """
     sys.stdout.write('\r')
     sys.stdout.flush()
@@ -73,6 +73,8 @@ def process(preText, i, total):
     for k in range(int(percentage), 30):
         size_str += "."
     size_str += "] Target: " + str(total) + " | Done: " + str(i) + Fore.RESET
+    if start:
+        size_str += "] %0.2fs"%((current_milli_time()-start)//1000)
     sys.stdout.write('%s\r' % size_str)
     sys.stdout.flush()
 

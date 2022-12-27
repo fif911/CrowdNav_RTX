@@ -5,31 +5,12 @@ name = "CrowdNav-Seasonality"
 execution_strategy = {
     "ignore_first_n_results": 10,  # SETTING TIME
     # "sample_size": 60*24*7*4,
-    "sample_size": 2 * 60 * 24 * 7,  # how much eval steps we want. Eval is 30 secs in legoland
+    "sample_size": 60 * 24,  # how much eval steps we want. Eval is 30 secs in legoland
     "type": "seasonality",
     "knobs": [
-        # {
-        #     "total_car_counter": 0,
-        #     "car_counter_is_initial": True
-        # },
-        # {
-        #     "total_car_counter": 1,
-        #     "car_counter_is_initial": False
-        # },
-        {"total_car_counter": 700,
+        {"total_car_counter": 500,
          "car_counter_is_initial": True,
          },
-        # "car_migration_ticks_amount": 500,  # e.g. setting time. pass it to CrowdNav so we can adjust our
-        # increase/decrease algorithm
-        # },
-        # {"total_car_counter": 400,
-        #  "car_counter_is_initial": False},
-        # {"total_car_counter": 1500,
-        #  "car_counter_is_initial": False},
-        # {"total_car_counter": 100,
-        #  "car_counter_is_initial": False},
-        # {"total_car_counter": 2000,
-        #  "car_counter_is_initial": False}
     ]
 }
 

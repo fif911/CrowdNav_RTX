@@ -83,14 +83,12 @@ def secondaryUpdate(wf, exp, tgen):
         if tgen is not None and cp["topic"] == "crowd-nav-tick_updates":
             # print("Waiting for data")
             new_data = cp["instance"].returnData()
-            # print("recieved new data")
-            # if not new_data:
-            #     # fool-prof strategy
-            #     error("Not new data arrived")
-            #     continue
-            # print(new_data)
-            trafficUpdate(wf, exp, tgen, new_data)
-            new_data = [new_data]
+            if new_data:
+                trafficUpdate(wf,exp,tgen,new_data)
+                new_data = [new_data]
+            else:
+                print("Missing Data")
+                new_data = []
         else:
             new_data = cp["instance"].returnDataListNonBlocking()
         for nd in new_data:
@@ -136,9 +134,9 @@ def experimentFunction(wf, exp, tgen=None):
         while i < sample_size:
             primaryUpdate(wf, exp, tgen is None)
             i += 1
-            if i % 10 == 0:
-                print(f"i = {i} out of {sample_size}")
-            process("CollectSamples | ", i, sample_size)
+            #if i % 10 == 0:
+            #    print(f"i = {i} out of {sample_size}")
+            process("CollectSamples | ", i, sample_size,start = start_time)
             # now we use returnDataListNonBlocking on all secondary data providers
             if hasattr(wf, "secondary_data_providers"):
                 secondaryUpdate(wf, exp, tgen)
