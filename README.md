@@ -146,3 +146,66 @@ RTX has the following abstractions that can be implemented for any given service
         }
     }
     ```
+### Data provider
+* In `KafkaConsumerDataProvider.py`, values sent from CrowdNav throught Kafka is recieved by RTX. It also provides a connection to traffic generator, which is used for generate real-world traffic data.
+
+        try:
+            self.kafka_uri = cp["kafka_uri"]
+            self.topic = cp["topic"]
+            self.serializer = cp["serializer"]
+            info(
+                "> KafkaConsumer  | " + self.serializer + " | URI: " + self.kafka_uri + " | Topic: " +
+                self.topic, Fore.CYAN)
+        ...
+        self.consumer = KafkaConsumer(bootstrap_servers=self.kafka_uri,
+                                          value_deserializer=self.serialize_function,
+                                          enable_auto_commit=False,
+                                          group_id=None,
+                                          consumer_timeout_ms=3000)
+            # subscribe to the requested topic
+            self.consumer.subscribe([self.topic])
+
+### Traffic generator
+* A traffic generator is defined in `TrafficParser.py` to generate the various attributes of a real-world traffic information.
+
+        def __init__(self, reference_mean=1000, dataset=None, minute_in_step=15, rescale_time=None, extend="Loop",
+                 model="Fourier", interpolate="linear", interpolate_order=2, noiseScale=0, stream=False,
+                 remove_growth=False):
+
+### Seasonality strategy
+* In `definition.py` of `crowdnav-seasonality`, Various functions are defined for seasonality analysis.
+* primary_data_reducer - Processes data sent when smart car arrives
+* ticks_data_reducer - Processes data sent on every 30 ticks in CrowdNav by default
+* primary_data_provider - RTX registers as a customer of Kafka to subscribe messages from CrowdNav returned values
+
+        primary_data_provider = {
+            "type": "kafka_consumer",
+            "kafka_uri": "localhost:9092",
+            "topic": "crowd-nav-trips",
+            "serializer": "JSON",
+            "data_reducer": primary_data_reducer
+        }
+* change_provider - RTX also registers as a provider of Kafka to provide change directives
+
+        change_provider = {
+            "type": "kafka_producer",
+            "kafka_uri": "localhost:9092",
+            "topic": "crowd-nav-commands",
+            "serializer": "JSON",
+        }  
+* secondary_data_providers - RTX again registers as a customer of Kafka to subscribe messages for tick recording
+
+        secondary_data_providers = [
+            {
+                "type": "kafka_consumer",
+                "kafka_uri": "localhost:9092",
+                "topic": kafkaTopicTick,
+                "serializer": "JSON",
+                "data_reducer": ticks_data_reducer
+            }
+        ]
+* evaluator - Function to evaluate goodness of the knobs in the experiment
+* state_initializer - Initilize every state when experiment starts
+* The result are saved in `seasonality_details.csv`. According to the result we can find the differences between actual traffic volumes and expected volumes on every 30 ticks as set by defult in CrowdNav. As well as the differences of speeds between smart cars and normal cars.
+<img width="1133" alt="image" src="https://user-images.githubusercontent.com/58473822/209715661-5d4caa27-9cb1-46a7-96ee-ee73ea3a6564.png">
+
