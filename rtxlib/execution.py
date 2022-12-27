@@ -125,7 +125,6 @@ def logResults(wf, exp, start_time, result):
     seasonality_details_plot: dict = copy.deepcopy(exp["state"])
     del seasonality_details_plot['count']
     del seasonality_details_plot['avg_overhead']
-    seasonality_details_plot.pop('overheads', None)  # not the size of other arrays !!!
 
     # log seasonality_details.csv
     if seasonality_details_plot:  # check if there is relevant data to plot

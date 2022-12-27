@@ -13,13 +13,13 @@ execution_strategy = {
             "car_counter_is_initial": True,
 
             # Uses the latest version of knobs from Evolutionary strategy for 500 cars
-            'route_random_sigma': 0.23,
-            'exploration_percentage': 0.17,
-            'max_speed_and_length_factor': 1.95,
-            'average_edge_duration_factor': 1.36,
-            'freshness_update_factor': 16,
-            'freshness_cut_off_value': 696,
-            're_route_every_ticks': 54
+            'route_random_sigma': 0.22,
+            'exploration_percentage': 0.03,
+            'max_speed_and_length_factor': 1.8,
+            'average_edge_duration_factor': 1.65,
+            'freshness_update_factor': 10,
+            'freshness_cut_off_value': 101,
+            're_route_every_ticks': 13
         },
     ]
 }
@@ -28,7 +28,6 @@ execution_strategy = {
 def primary_data_reducer(state, newData, wf):
     """Processes data sent when smart car arrives"""
     cnt = state["count"]
-    state["overheads"].append(newData["overhead"])
     state["avg_overhead"] = (state["avg_overhead"] * cnt + newData["overhead"]) / (cnt + 1)
     state["count"] = cnt + 1
     return state
@@ -37,6 +36,7 @@ def primary_data_reducer(state, newData, wf):
 def ticks_data_reducer(state, newData, wf):
     """Processes data sent on every evaluation (30 ticks in CrowdNav by default)"""
     state['ticks'].append(newData['tick'])
+    state["overheads"].append(newData["overhead"])
     state['traffic_volumes'].append(newData['traffic_volume'])
     state['traffic_targets'].append(newData['traffic_target'])
     state['smart_average_speeds_a'].append(newData['smart_average_speed_a'])
