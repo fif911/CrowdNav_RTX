@@ -18,13 +18,6 @@ Blue is the dataset. Orange is the simulated traffic based on the dataset
 
 ![Banner](./images/traffic_generator_simulates_traffic.png)
 
-### Minimal Setup
-
-* Download the RTX code
-* Run `python setup.py install` to download all dependencies
-* To run example experiments, first install [CrowdNav](https://github.com/Starofall/CrowdNav)
-* To use Spark as a PreProcessor you also need to install Spark and set SPARK_HOME
-
 ### Short teams guide:
 
 This is a guide for our team so everyone can spin-up and run properly the system.
@@ -44,8 +37,8 @@ docker run --name kafka --hostname kafka -p 2181:2181 -p 9092:9092 --env ADVERTI
 
 #### CrowdNav
 
-* Git clone the CrowdNav repo ```git clone https://github.com/iliasger/CrowdNav.git```
-* Install python 2.7 locally
+* Git clone the CrowdNav repo ```git clone https://github.com/fif911/CrowdNav.git```
+* Install Python 2.7 locally (Proven to work with Python 2.7)
 * Create virtual environment
 * Run ```python setup.py install```
 * In ```app/Config.py``` set:
@@ -64,6 +57,7 @@ kafkaHost = "localhost:9092"
 * run ```python setup.py install```
 * run fixed version of RTX with ```python rtx.py start examples/crowdnav-seasonality```
 * check the logs, ```seasonality_details.csv``` and ```results.csv```
+* To use Spark as a PreProcessor you also need to install Spark and set SPARK_HOME
 
 Ensure the in ```definition.py```settings are:
 
