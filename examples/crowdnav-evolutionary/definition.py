@@ -23,8 +23,8 @@ execution_strategy = {
     }
 }
 
-"""defines what states the experinment will process"""
 def primary_data_reducer(state, newData, wf):
+    """defines what states the experinment will process"""
     cnt = state["count"]
     state["avg_overhead"] = (state["avg_overhead"] * cnt + newData["overhead"]) / (cnt + 1)
     state["count"] = cnt + 1
@@ -47,13 +47,12 @@ change_provider = {
 }
 
 
-"""defines what the experimentFunction returns"""
 def evaluator(resultState, wf):
-    # avg overhead computed by primary_data_reducer
-    return resultState["avg_overhead"]
+    """defines what the experimentFunction returns"""
+    return resultState["avg_overhead"] # avg overhead computed by primary_data_reducer
 
-"""defines what states to be initialized when experiment begins"""
 def state_initializer(state, wf):
+    """defines what states to be initialized when experiment begins"""
     state["count"] = 0
     state["avg_overhead"] = 0
     return state
