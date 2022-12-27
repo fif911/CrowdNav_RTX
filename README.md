@@ -11,10 +11,12 @@ RTX is particularly useful in analyzing operational data in a Big Data environme
 throughout time.**
 
 ### Traffic Generator
+* A traffic generator is defined in `TrafficParser.py` to generate the various attributes of a real-world traffic information.
 
-**FILL DATA HERE**
-Takes dataset and simulates traffic for infinite amount of time
-Blue is the dataset. Orange is the simulated traffic based on the dataset
+        def __init__(self, reference_mean=1000, dataset=None, minute_in_step=15, rescale_time=None, extend="Loop",
+                 model="Fourier", interpolate="linear", interpolate_order=2, noiseScale=0, stream=False,
+                 remove_growth=False):
+* It takes dataset and simulates traffic for infinite amount of time. Blue is the dataset. Orange is the simulated traffic based on the dataset
 
 ![Banner](./images/traffic_generator_simulates_traffic.png)
 
@@ -170,13 +172,6 @@ RTX has the following abstractions that can be implemented for any given service
                                           consumer_timeout_ms=3000)
             # subscribe to the requested topic
             self.consumer.subscribe([self.topic])
-
-### Traffic generator
-* A traffic generator is defined in `TrafficParser.py` to generate the various attributes of a real-world traffic information.
-
-        def __init__(self, reference_mean=1000, dataset=None, minute_in_step=15, rescale_time=None, extend="Loop",
-                 model="Fourier", interpolate="linear", interpolate_order=2, noiseScale=0, stream=False,
-                 remove_growth=False):
 
 ### Seasonality strategy
 * In `definition.py` of `crowdnav-seasonality`, Various functions are defined for seasonality analysis.
