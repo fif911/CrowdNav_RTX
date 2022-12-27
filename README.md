@@ -152,3 +152,36 @@ RTX has the following abstractions that can be implemented for any given service
         }
     }
     ```
+### Data provider
+* In `KafkaConsumerDataProvider.py`, values sent from CrowdNav throught Kafka is recieved by RTX. It also provides a connection to traffic generator, which is used for generate real-world traffic data.
+
+        try:
+            self.kafka_uri = cp["kafka_uri"]
+            self.topic = cp["topic"]
+            self.serializer = cp["serializer"]
+            info(
+                "> KafkaConsumer  | " + self.serializer + " | URI: " + self.kafka_uri + " | Topic: " +
+                self.topic, Fore.CYAN)
+        ...
+        self.consumer = KafkaConsumer(bootstrap_servers=self.kafka_uri,
+                                          value_deserializer=self.serialize_function,
+                                          enable_auto_commit=False,
+                                          group_id=None,
+                                          consumer_timeout_ms=3000)
+            # subscribe to the requested topic
+            self.consumer.subscribe([self.topic])
+
+### Traffic generator
+* A traffic generator is defined in `TrafficParser.py` to generate the various attributes of a real-world traffic information.
+
+        def __init__(self, reference_mean=1000, dataset=None, minute_in_step=15, rescale_time=None, extend="Loop",
+                 model="Fourier", interpolate="linear", interpolate_order=2, noiseScale=0, stream=False,
+                 remove_growth=False):
+
+### Seasonality strategy
+* In `definition.py` of `crowdnav-seasonality`, Various functions are defined for seasonality analysis. The result are saved in `seasonality_details.csv`. According to the result we can find the differences between actual traffic volumes and expected volumes. As well as the differences of speeds between smart cars and normal cars.
+
+        <img width="1133" alt="image" src="https://user-images.githubusercontent.com/58473822/209715601-d6b64b29-7e61-4e90-9670-fd79c1828566.png">
+
+
+                 remove_growth=False):
