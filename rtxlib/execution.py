@@ -1,3 +1,5 @@
+import copy
+
 from rtxlib import info, error, warn, direct_print, process, log_results, current_milli_time
 
 
@@ -17,7 +19,7 @@ def warmup(wf, exp):
                 i += 1
                 process("IgnoreSamples  | ", i, to_ignore)
         print("")
-    print("Ignoring finished. Started to collect data")
+    # print("Ignoring finished. Started to collect data")
 
 
 def initExperiment(wf, exp):
@@ -84,7 +86,7 @@ def secondaryUpdate(wf, exp, tgen):
             # print("Waiting for data")
             new_data = cp["instance"].returnData()
             if new_data:
-                trafficUpdate(wf,exp,tgen,new_data)
+                trafficUpdate(wf, exp, tgen, new_data)
                 new_data = [new_data]
             else:
                 print("Missing Data")
@@ -118,6 +120,17 @@ def logResults(wf, exp, start_time, result):
     info("> FullState      | " + str(exp["state"]))
     info("> ResultValue    | " + str(result))
     # log the result values into a csv file
+    seasonality_details_plot: dict = copy.deepcopy(exp["state"])
+    del seasonality_details_plot['count']
+    del seasonality_details_plot['avg_overhead']
+    del seasonality_details_plot['overheads']  # not the size of other arrays !!!
+
+    # log seasonality_details.csv
+    log_results(wf.folder, list(seasonality_details_plot.keys()), csv_name="seasonality_details.csv", append=False)
+    for d in zip(*seasonality_details_plot.values()):
+        log_results(wf.folder, d, csv_name="seasonality_details.csv", append=True)
+
+    # log results.csv
     log_results(wf.folder, list(exp["knobs"].values()) + [result], append=True)
 
 
@@ -130,13 +143,13 @@ def experimentFunction(wf, exp, tgen=None):
     sample_size = exp["sample_size"]
     i = 0
     try:
-        print("Before collecting samples")
+        # print("Before collecting samples")
         while i < sample_size:
             primaryUpdate(wf, exp, tgen is None)
             i += 1
-            #if i % 10 == 0:
-            #    print(f"i = {i} out of {sample_size}")
-            process("CollectSamples | ", i, sample_size,start = start_time)
+            # if i % 10 == 0:
+            #     print(f"Progress: {i} out of {sample_size}")  # as collect samples progress bar does not work for me |_o_|
+            process("CollectSamples | ", i, sample_size, start=start_time)
             # now we use returnDataListNonBlocking on all secondary data providers
             if hasattr(wf, "secondary_data_providers"):
                 secondaryUpdate(wf, exp, tgen)
