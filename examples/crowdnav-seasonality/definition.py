@@ -12,15 +12,14 @@ execution_strategy = {
             "total_car_counter": 500,
             "car_counter_is_initial": True,
 
-            # Uses the best received knobs from Evolutionary strategy for 500 cars
-            # TODO: set new
-            'route_random_sigma': 0.22,
-            'exploration_percentage': 0.03,
-            'max_speed_and_length_factor': 1.8,
-            'average_edge_duration_factor': 1.65,
-            'freshness_update_factor': 10,
-            'freshness_cut_off_value': 101,
-            're_route_every_ticks': 13
+            # Uses the latest version of knobs from Evolutionary strategy for 500 cars
+            'route_random_sigma': 0.23,
+            'exploration_percentage': 0.17,
+            'max_speed_and_length_factor': 1.95,
+            'average_edge_duration_factor': 1.36,
+            'freshness_update_factor': 16,
+            'freshness_cut_off_value': 696,
+            're_route_every_ticks': 54
         },
     ]
 }

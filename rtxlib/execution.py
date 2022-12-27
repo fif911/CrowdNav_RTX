@@ -9,7 +9,7 @@ def _defaultChangeProvider(variables, wf):
 
 
 def warmup(wf, exp):
-    # ignore the first data sets
+    """ignore the first data sets"""
     to_ignore = exp["ignore_first_n_results"]
     if to_ignore > 0:
         i = 0
@@ -23,7 +23,7 @@ def warmup(wf, exp):
 
 
 def initExperiment(wf, exp):
-    # load change event creator or use a default
+    """Load change event creator or use a default"""
     change_creator = _defaultChangeProvider
     if hasattr(wf, "change_event_creator"): change_creator = change_creator
 
@@ -64,8 +64,7 @@ def primaryUpdate(wf, exp, blocking=False):
 
 
 def trafficUpdate(wf, exp, tgen, new_data):
-    # print(tgen)
-    # print(new_data)
+    """Compose message for CrowdNav to update traffic volume and send it"""
     c_tick = new_data['tick']
     if tgen.base_tick is None:
         tgen.base_tick = c_tick
@@ -81,9 +80,10 @@ def trafficUpdate(wf, exp, tgen, new_data):
 
 
 def secondaryUpdate(wf, exp, tgen):
+    """Receive the data data from secondary_data_providers and process it"""
     for cp in wf.secondary_data_providers:
+        # If message sent from CrowdNav in tick_updates topic - it's time for another evaluation step
         if tgen is not None and cp["topic"] == "crowd-nav-tick_updates":
-            # print("Waiting for data")
             new_data = cp["instance"].returnData()
             if new_data:
                 trafficUpdate(wf, exp, tgen, new_data)
@@ -105,7 +105,7 @@ def secondaryUpdate(wf, exp, tgen):
 
 
 def logResults(wf, exp, start_time, result):
-    # we store the counter of this experiment in the workflow
+    """Log the counter of this experiment in the workflow and log results to files"""
     if hasattr(wf, "experimentCounter"):
         wf.experimentCounter += 1
     else:
@@ -119,7 +119,9 @@ def logResults(wf, exp, start_time, result):
             (wf.totalExperiments - wf.experimentCounter) * duration / 1000) + "sec")
     info("> FullState      | " + str(exp["state"]))
     info("> ResultValue    | " + str(result))
+
     # log the result values into a csv file
+    # prepare for logging
     seasonality_details_plot: dict = copy.deepcopy(exp["state"])
     del seasonality_details_plot['count']
     del seasonality_details_plot['avg_overhead']

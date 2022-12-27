@@ -14,8 +14,11 @@ from rtxlib.trafficprovider.TrafficParser import TrafficGenerator
 
 import matplotlib.pyplot as plt
 
+
 def start_seasonality_strategy(wf):
-    """ executes all experiments from the definition file """
+    """ Seasonality strategy
+
+    executes all experiments from the definition file """
     info("> ExecStrategy   | Seasonality", Fore.CYAN)
     wf.totalExperiments = len(wf.execution_strategy["knobs"])
     info(f"Total experiments: {wf.totalExperiments}")
@@ -23,17 +26,14 @@ def start_seasonality_strategy(wf):
     warmup_size = wf.execution_strategy["ignore_first_n_results"]
     for knobset in wf.execution_strategy["knobs"]:
         if "total_car_counter" not in knobset:
-            knobset["total_car_counter"] = 600
-        pop_size = knobset["total_car_counter"]
-        # res = experimentFunction(wf, {
-        #     "knobs": knobset,
-        #     "ignore_first_n_results": warmup_size,
-        #     "sample_size": 2*warmup_size,
-        # })
-        res = experimentFunction(wf, {
-            "knobs": knobset,
-            "ignore_first_n_results": warmup_size,
-            "sample_size": sample_size,},
-            TrafficGenerator(pop_size,minute_in_step=15,rescale_time = 1/(60*15))
-            )
-    #Warm-Up
+            knobset["total_car_counter"] = 600  # set default
+        car_counter = knobset["total_car_counter"]
+        experimentFunction(
+            wf,
+            {
+                "knobs": knobset,
+                "ignore_first_n_results": warmup_size,
+                "sample_size": sample_size,
+            },
+            TrafficGenerator(car_counter, minute_in_step=15, rescale_time=1 / (60 * 15))
+        )

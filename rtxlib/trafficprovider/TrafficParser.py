@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn import linear_model
 import math
 import os
+
 dirname = os.path.dirname(__file__)
 DEFAULT = os.path.join(dirname, r"trafficDBs\traffic_hourly.csv")
 
@@ -40,10 +41,12 @@ class Deintegrator():
 
 
 class TrafficGenerator():
-    def __init__(self, reference_mean = 1000, dataset = None, minute_in_step = 15, rescale_time = None, extend = "Loop",
-                 model = "Fourier", interpolate = "linear", interpolate_order = 2, noiseScale = 0, stream = False,
-                 remove_growth = False):
-        """inputs:
+    def __init__(self, reference_mean=1000, dataset=None, minute_in_step=15, rescale_time=None, extend="Loop",
+                 model="Fourier", interpolate="linear", interpolate_order=2, noiseScale=0, stream=False,
+                 remove_growth=False):
+        """ TrafficGenerator class
+
+        inputs:
             reference_mean: Intended mean of population at the start of simulation
             dataset: Traffic Dataset to pass to the simulation
             minute_in_step: Minutes in a Subdivisions for interpolation
@@ -84,6 +87,7 @@ class TrafficGenerator():
         self.base_tick = None
 
     def load(self, filepath):
+        """Load dataset"""
         mxt = self.minutesTic
         raw_data = pd.read_csv(filepath, parse_dates=True, date_parser=pd.to_datetime)
         raw_data["timestamp"] = pd.to_datetime(raw_data["timestamp"])
@@ -101,8 +105,8 @@ class TrafficGenerator():
         self.start_date = time.min()
         self.dilation = self.minutesTic * self.rescale_time if self.rescale_time is not None else 1
 
-    def date(self,tic):
-        return self.start_date + pd.Timedelta(self.dilation * tic,"min")
+    def date(self, tic):
+        return self.start_date + pd.Timedelta(self.dilation * tic, "min")
 
     def rescale(self, tic, val):
         tic = 0 if self.removeIntegration else tic
@@ -152,11 +156,11 @@ class TrafficGenerator():
         self.extrapolate = lambda t: self.data.iloc[-1] + self.noise()
 
     def fourierModel(self, harmonic_depth=None):
-        #Traditional Fourier Extrapolation
+        # Traditional Fourier Extrapolation
         data = self.data
         if harmonic_depth is None:
-            #Defaults to 10% resolution approximation
-            #a harmonic depth equal to twice the sample length is the same as loop
+            # Defaults to 10% resolution approximation
+            # a harmonic depth equal to twice the sample length is the same as loop
             harmonic_depth = len(data) // 10
         n = len(data)
         t = np.arange(0, n)
@@ -166,14 +170,15 @@ class TrafficGenerator():
         indexes = sorted(indexes, key=lambda i: np.absolute(f[i]))
         t = np.arange(0, n)
         restored_sig = np.zeros(t.size)
-        #Reconstruct signal from sum of principal harmonics
+        # Reconstruct signal from sum of principal harmonics
         for i in indexes[:1 + harmonic_depth * 2]:
             ampli = np.absolute(x_freqdom[i]) / n  # amplitude
             phase = np.angle(x_freqdom[i])  # phase
             restored_sig += ampli * np.cos(2 * np.pi * f[i] * t + phase)
         restored_sig = restored_sig * np.std(data) / np.std(restored_sig)
-        #Define the extrapolator from the precalculated sum of harmonics
-        #using periodicity to minimize calculations
+
+        # Define the extrapolator from the precalculated sum of harmonics
+        # using periodicity to minimize calculations
         def extrapolate(tic):
             noise = self.noise()
             return restored_sig[tic % n] + noise
