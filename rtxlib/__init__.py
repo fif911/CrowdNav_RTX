@@ -13,6 +13,7 @@ import csv
 def current_milli_time():
     return int(round(time.time() * 1000))
 
+
 # Log Levels
 LEVEL_DEBUG = 4
 LEVEL_INFO = 3
@@ -62,7 +63,7 @@ def error(any, color=Fore.RED):
         print(color + "> Error: " + str(any) + Fore.RESET)
 
 
-def process(preText, i, total):
+def process(preText, i, total, start=None):
     """ used to display the progress bar while experiments run """
     sys.stdout.write('\r')
     sys.stdout.flush()
@@ -73,6 +74,8 @@ def process(preText, i, total):
     for k in range(int(percentage), 30):
         size_str += "."
     size_str += "] Target: " + str(total) + " | Done: " + str(i) + Fore.RESET
+    if start:
+        size_str += "] %0.2fs" % ((current_milli_time() - start) // 1000)
     sys.stdout.write('%s\r' % size_str)
     sys.stdout.flush()
 
@@ -92,16 +95,16 @@ def direct_print(str):
     sys.stdout.flush()
 
 
-def log_results(experiment_folder, data, append=True):
+def log_results(experiment_folder, data, csv_name='results.csv', append=True):
     """ logs the result values of an experiment to a csv file """
     try:
         if append:
-            with open('./' + str(experiment_folder) + '/results.csv', 'a') as csv_file:
-                writer = csv.writer(csv_file, dialect='excel')
+            with open('./' + str(experiment_folder) + '/' + csv_name, 'a', newline="\n") as csv_file:
+                writer = csv.writer(csv_file)
                 writer.writerow(data)
         else:
-            with open('./' + str(experiment_folder) + '/results.csv', 'w+') as csv_file:
-                writer = csv.writer(csv_file, dialect='excel')
+            with open('./' + str(experiment_folder) + '/' + csv_name, 'w+', newline="\n") as csv_file:
+                writer = csv.writer(csv_file)
                 writer.writerow(data)
 
     except csv.Error as e:

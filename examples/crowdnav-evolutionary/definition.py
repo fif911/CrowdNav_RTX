@@ -2,13 +2,14 @@
 name = "CrowdNav-Evolutionary"
 
 execution_strategy = {
-    "parallel_execution_of_individuals": False, # if this is True, CrowdNav should be run with 'python parallel.py <no>'
-    "ignore_first_n_results": 50, #10000,
-    "sample_size": 50, #10000,
+    "parallel_execution_of_individuals": False,  # if this is True,
+    # CrowdNav should be run with 'python parallel.py <no>'
+    "ignore_first_n_results": 50,  # 10000,
+    "sample_size": 200,  # 10000,
     "type": "evolutionary",
     "optimizer_method": "GA",
-    "optimizer_iterations": 10, # number of generations
-    "population_size": 5, # number of individuals in the population
+    "optimizer_iterations": 10,  # number of generations
+    "population_size": 5,  # number of individuals in the population
     "crossover_probability": 0.5,
     "mutation_probability": 0.2,
     "knobs": {
@@ -38,7 +39,6 @@ primary_data_provider = {
     "data_reducer": primary_data_reducer
 }
 
-
 change_provider = {
     "type": "kafka_producer",
     "kafka_uri": "localhost:9092",
@@ -49,7 +49,7 @@ change_provider = {
 
 # defines what the experimentFunction returns
 def evaluator(resultState, wf):
-    # avg oveahead computed by primary_data_reducer
+    # avg overhead computed by primary_data_reducer
     return resultState["avg_overhead"]
 
 

@@ -16,6 +16,7 @@ RTX is particularly useful in analyzing operational data in a Big Data environem
 
 ### Short teams guide:
 
+This is a guide for our team so everyone can spin-up and run properly the system.
 How to run the CrowdNav and RTX together properly:
 
 #### Sumo
@@ -50,8 +51,8 @@ kafkaHost = "localhost:9092"
 * Clone this RTX ```git clone https://github.com/fif911/CrowdNav_RTX```
 * Install Python 3. (Proven to work with Python 3.9)
 * run ```python setup.py install```
-* run fixed version of RTX with ```python rtx.py start examples/crowdnav-sequential```
-* check the logs and plot after simulation
+* run fixed version of RTX with ```python rtx.py start examples/crowdnav-seasonality```
+* check the logs, ```seasonality_details.csv``` and ```results.csv```
 
 Ensure the in ```definition.py```settings are:
 
